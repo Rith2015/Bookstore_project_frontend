@@ -421,19 +421,27 @@
         document.getElementById('search-form').addEventListener('submit', search);
         // delete data tables  
         const delete_tables = async () => {
+            const token = localStorage.getItem("access_token");
+            try{
             const response = await axios.delete(`${SERVER}/delete_tables`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             alert(response.data.message)
+        }catch (error) {
+                console.error(error);
+                alert('Failed to delete tables please admin log in!');
+            }
         }
         // create all tables and Seed the tables with data from the backend
         const seed_data = async () => {
-            const response = await axios.post(`${SERVER}/seed_data`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            alert(response.data.message);
-            window.location.reload();
-        };
+            try{
+                const response = await axios.post(`${SERVER}/seed_data`)
+                alert(response.data.message);
+            }catch (error) {
+                console.error(error);
+                alert('Failed to seed data please admin log in!');
+            }
+        }
     </script>
 </body>
 
