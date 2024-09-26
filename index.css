@@ -1,0 +1,83 @@
+    body {
+      padding-top: 56px;
+      background-image: url('https://i.pinimg.com/736x/f6/fa/b4/f6fab421dc047313d95bb8125416d99d.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    .offcanvas-body {
+      padding: 1.5rem;
+    }
+
+    .offcanvas-login {
+      height: 300px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .navbar-brand-centered {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-brand-centered img {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .carousel-container {
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .carousel-inner img {
+      width: 310px;
+      height: auto;
+      object-fit: cover;
+      margin: 0 auto;
+      display: block;
+    }
+
+    .carousel-item {
+      text-align: center;
+    }
+
+    .book-details {
+      margin-top: 5px;
+      color: #ffffff;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .book-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+
+    .carousel-indicators button {
+      background-color: #000;
+    }
+
+    #display {
+      display: flex;
+      justify-content: center;
+      align-items: center; /* Center vertically if needed */
+      flex-wrap: wrap; /* Allow cards to wrap to the next line */
+      margin-top: 20px;
+  }
+  
+  .card {
+      margin: 10px; /* Adds space around each card */
+      width: 18rem; /* Fixed width for uniformity */
+  }
+  

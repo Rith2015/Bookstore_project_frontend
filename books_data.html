@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inkspire Library</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <button class="btn btn-outline-light me-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu"
+                aria-controls="offcanvasMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <h1 class="navbar-brand mx-auto">Inkspire Library</h1>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse ms-auto" id="navbarSupportedContent">
+                <form class="d-flex ms-auto" id="search-form">
+                    <input class="form-control me-2" type="search" placeholder="Search books or authors"
+                        aria-label="Search" id="search">
+                    <input class="form-control me-2" type="search" placeholder="Search customers" aria-label="Search"
+                        id="search_customer">
+                    <button class="btn btn-outline-light" type="submit">Search</button>
+                </form>
+                <button class="btn btn-outline-light ms-3" data-bs-toggle="modal" data-bs-target="#loginModal">Admin Log
+                    In</button>
+                <button class="btn btn-outline-light ms-3" data-bs-toggle="modal"
+                    data-bs-target="#registerModal">Register New Admin User</button>
+                <button class="btn btn-outline-light ms-3"><a href="index.html">Log out</a></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Log In</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" placeholder="Enter your username">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="text" class="form-control" id="password" placeholder="Enter your password">
+                    </div>
+                    <button type="submit" class="btn btn-primary" onclick="login()">Log In</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registration Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">Register</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="registerUsername" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="registerUsername" placeholder="Choose a username">
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerPassword" class="form-label">Password</label>
+                        <input type="text" class="form-control" id="registerPassword" placeholder="Choose a password">
+                    </div>
+                    <button type="submit" class="btn btn-success" onclick="register()">Register</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Off-Canvas Menu -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasMenuLabel">Library Sections</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="admin.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="books_data.html">Books Data</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="customers_data.html">Customers Data</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="loans_data.html">Loans Data</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="about_admin.html">About</a>
+                </li><br>
+                <li class="nav-item">
+                    <button class="btn btn-success mb-2" onclick="seed_data()">Reset data tables</button>
+                    <button class="btn btn-danger mb-2" onclick="delete_tables()">Delete data tables</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Item Management Buttons -->
+    <div id="display">
+        <div class="container mt-4" style="color: white; margin-top: 100px !important;">
+            <h2>Manage Books</h2>
+            <button class="btn btn-primary mb-2" data-bs-toggle="collapse" data-bs-target="#manageItems">Manage
+                Items</button>
+            <button class="btn btn-info mb-2" data-bs-toggle="collapse" data-bs-target="#show_books"
+                onclick="show_books_data()">Show Books</button>
+            <!-- Collapsible Item Management Form -->
+            <div id="manageItems" class="collapse mt-3">
+                <div class="mb-2">
+                    <label for="itemId" class="form-label">Update book info or change availability:</label>
+                    <div id="book"></div>
+                </div>
+                <button class="btn btn-warning mb-2" onclick="update_item()">Update</button>
+                <button class="btn btn-danger mb-2" onclick="del_book()">Delete</button>
+                <button class="btn btn-success mb-2" onclick="available()">Available</button>
+                <button class="btn btn-danger mb-2" onclick="unavailable()">Unavailable</button>
+                <div class="mb-2">
+                    <label for="name" class="form-label">Name:</label>
+                    <input type="text" class="form-control" id="name" required>
+                </div>
+                <div class="mb-2">
+                    <label for="author" class="form-label">Author:</label>
+                    <input type="text" class="form-control" id="author" required>
+                </div>
+                <div class="mb-2">
+                    <label for="category" class="form-label">Category:</label>
+                    <input type="text" class="form-control" id="category" required>
+                </div>
+                <div class="mb-2">
+                    <label for="year" class="form-label">Year Published:</label>
+                    <input type="number" class="form-control" id="year" required>
+                </div>
+                <div class="mb-2">
+                    <label for="loan_time_types" class="form-label">Loan time range:</label>
+                    <div id="loan_time_types"></div>
+                </div>
+                <div class="mb-2">
+                    <label for="Image_URL" class="form-label">Image URL:</label>
+                    <input type="text" class="form-control" id="Image_URL" required>
+                </div>
+                <button class="btn btn-primary" onclick="add_item()">Add</button>
+            </div>
+        </div>
+    </div>
+    <div class="collapse mt-3, row" id="show_books"></div>
+    <script>
+        const SERVER = "https://bookstore-project-backend-io1x.onrender.com";
+        let isBooksVisible = false;
+        // Show books function
+        const show_books_data = async () => {
+            if (isBooksVisible) {
+                show_books.innerHTML = '';
+                isBooksVisible = false;
+            } else {
+                try {
+                    const token = localStorage.getItem("access_token");
+                    const response = await axios(`${SERVER}/books`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
+                    const books = response.data;
+                    show_books.innerHTML = books.map(item => `
+                <div class="col-md-3 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">ID: ${item.id} <br> Name: ${item.name}</h5>
+                            <h5 class="card-subtitle mb-2 text-muted">Author: ${item.author} <br>
+                                Category: ${item.category} <br>
+                                Year: ${item.year_published}<br>
+                                Loan duration: ${item.duration}</h5>
+                            <h4>${item.status}</h4>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+                    isBooksVisible = true;
+                } catch {
+                    alert("Please admin log in.");
+                }
+            }
+        };
+        // Dropdown for books list
+        axios(`${SERVER}/books`).then(res => {
+            const book = document.getElementById('book');
+            book.innerHTML = "<select id='books' class='form-select'>" + res.data.map(item => `
+                <option value="${item.id}">${item.name} , ${item.status}</option>`).join("") + "</select>";
+        });
+
+        // Dropdown for loan time types list
+        axios(`${SERVER}/loan_time`).then(res => {
+            const time = document.getElementById('loan_time_types'); // Assuming this is the container
+            time.innerHTML = "<select id='loan_time' class='form-select'>" + res.data.map(item => ` 
+        <option value="${item.id}">${item.duration}</option>`).join("") + "</select>"
+        });
+        // Add new book to Books table
+        const add_item = async () => {
+            const name = document.getElementById("name").value;
+            const author = document.getElementById("author").value;
+            const category = document.getElementById("category").value;
+            const year = document.getElementById("year").value;
+            const loan_time_type_id = document.getElementById("loan_time").value;
+            const image_url = document.getElementById("Image_URL").value;
+
+            try {
+                const token = localStorage.getItem("access_token");
+                const response = await axios.post(`${SERVER}/add_books`, {
+                    name: name,
+                    author: author,
+                    category: category,
+                    year_published: year,
+                    loan_time_type_id: loan_time_type_id,
+                    image_url: image_url
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                alert(response.data.message);
+                window.location.reload();
+            } catch (error) {
+                console.error("Error adding book:", error);
+                alert("Failed to add book. Please check your input and try again.");
+            }
+        };
+
+        // Update info of books in Books table 
+        const update_item = async () => {
+            const id = document.getElementById("books").value;
+            const name = document.getElementById("name").value;
+            const author = document.getElementById("author").value;
+            const category = document.getElementById("category").value;
+            const loan_time_type_id = document.getElementById("loan_time").value;
+            const year = document.getElementById("year").value;
+            const token = localStorage.getItem("access_token");
+            try {
+                const response = await axios.put(`${SERVER}/edit_books/${id}`, {
+                    name: name,
+                    author: author,
+                    category: category,
+                    year_published: year,
+                    loan_time_type_id: loan_time_type_id
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                alert(response.data.message);
+                window.location.reload();
+            } catch (error) {
+                console.error("Error updating book:", error);
+                alert("Failed to update book. Please try again.");
+            }
+        }     ;       
+
+
+        // Turn book available
+        const available = async () => {
+            const id = document.getElementById("books").value;
+            const token = localStorage.getItem("access_token");
+            const response= await axios.put(`${SERVER}/make_books_available/${id}`, {
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            alert(response.data.message);
+            window.location.reload();
+        };
+        // Turn book unavailable
+        const unavailable = async () => {
+            const id = document.getElementById("books").value;
+            const token = localStorage.getItem("access_token");
+            const response= await axios.put(`${SERVER}/Make_books_Unavailable/${id}`, {
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+                
+            });
+            alert(response.data.message);
+            window.location.reload();
+        };
+        // delete book
+        const del_book = async () => {
+            const id = document.getElementById('books').value;
+            const token = localStorage.getItem("access_token");
+            try {
+                const response = await axios.delete(`${SERVER}/del_book/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                alert(response.data.message);
+                window.location.reload();
+            } catch (error) {
+                console.error("Error while trying to delete book:", error);
+                alert("Failed to delete book. Book is in a loan.");
+            }
+        };
+        // log in admin username and password to get token
+        const login = async () => {
+            try {
+                const res = await axios.post(`${SERVER}/login`, {
+                    username: document.getElementById('username').value,
+                    password: document.getElementById('password').value
+                });
+                localStorage.setItem("access_token", res.data.access_token);
+                window.location.href = "admin.html";
+            } catch (error) {
+                console.error(error);
+                alert("Wrong username or password!");
+            }
+        }
+        // create new admin username
+        const register = async () => {
+            try {
+                const res = await axios.post(`${SERVER}/register`, {
+                    username: document.getElementById('registerUsername').value,
+                    password: document.getElementById('registerPassword').value
+                });
+                localStorage.setItem("access_token", res.data.access_token);
+            } catch (error) {
+                console.error(error);
+                alert(error.response?.data?.message || "Registration failed! Please try again.");
+            }
+        };
+        // search for books or authors or customers by name
+        const search = async (event) => {
+            event.preventDefault(); // Prevent the form from submitting and refreshing the page
+            const bookName = document.getElementById('search').value;
+            const customerName = document.getElementById('search_customer').value
+            if (bookName) {
+                const booksResponse = await axios(`${SERVER}/search_books/${bookName}`);// Search for books names
+                const authorResponse = await axios(`${SERVER}/search_author/${bookName}`);// Search for books authors
+                const books = [...booksResponse.data, ...authorResponse.data];
+                if (books.length === 0) {
+                    alert("No books or authors with this name found!"); // Alert the user if no book or authors is found
+                    return;
+                }
+                display.innerHTML = books.map(item => `
+            <div class="card" style="width: 15%;">
+                <img src="${item.image_url}" class="card-img-top" alt="Book image">
+                <div class="card-body">
+                    <h5 class="card-title">${item.name} by ${item.author}</h5>
+                    <p class="card-text">Category: ${item.category}, Year: ${item.year_published}<br>
+                    You can loan this book ${item.duration}.<br>
+                    <h6>Currently: ${item.status}.</h6></p>
+                    <a href="loans.html" class="btn btn-primary">Loan</a>
+                </div>
+            </div>
+        `).join("");// Search for customers
+            } else if (customerName) try {
+                token = localStorage.getItem("access_token")
+                const response = await axios.get(`${SERVER}/search_customer/${customerName}`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                const customers = response.data;
+                if (customers.length === 0) {
+                    alert("No customers found!"); // Alert the user if no customer is found
+                    return;
+                } display.innerHTML = customers.map(item => `
+            <div class="card" style="width: 15%;">
+                <div class="card-body">
+                    <h5 class="card-title">${item.name}, Age: ${item.age}</h5>
+                    <p class="card-text">Email: ${item.email}</p>
+                    <p class="card-text">Number: ${item.phone_number}</p>
+                    <p class="card-text">City: ${item.city}</p>
+                </div>
+            </div>
+        `).join("");
+            } catch {
+                alert("Please admin log in.");
+            }
+            else { alert("Please enter a search query."); }
+        };
+        // Attach the search event to the form
+        document.getElementById('search-form').addEventListener('submit', search);
+        // delete data tables  
+        const delete_tables = async () => {
+            const response = await axios.delete(`${SERVER}/delete_tables`)
+            alert(response.data.message)
+        }
+        // create all tables and Seed the tables with data from the backend
+        const seed_data=async()=>{
+            const response =await axios.post(`${SERVER}/seed_data`)
+            alert(response.data.message);
+            window.location.reload();
+        }
+    </script>
+</body>
+
+</html>

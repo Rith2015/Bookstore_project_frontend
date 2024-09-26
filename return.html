@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inkspire Library</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <button class="btn btn-outline-light me-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu"
+                aria-controls="offcanvasMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="mx-auto text">
+                <h1 class="navbar-brand">Inkspire Library</h1>
+            </div>
+
+            <div class="collapse navbar-collapse ms-auto" id="navbarSupportedContent">
+                <form class="d-flex ms-auto" id="search-form" onsubmit="search(event)">
+                    <input class="form-control me-2" type="search" placeholder="Search books or authers"
+                        aria-label="Search" id="search">
+                    <button class="btn btn-outline-light" type="submit">Search</button>
+                </form>
+
+                <!-- Login Button -->
+                <button class="btn btn-outline-light ms-3" data-bs-toggle="modal" data-bs-target="#loginModal">Admin Log
+                    In</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Modal (Popup) -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Log In</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" placeholder="Enter your username">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="text" class="form-control" id="password" placeholder="Enter your password">
+                    </div>
+                    <button type="submit" class="btn btn-primary" onclick="login()">Log In</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Off-Canvas Menu -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasMenuLabel">Library Sections</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="all_books.html">All Books</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="new_customer.html">New Customer</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="new_loan.html">Loan</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="return.html">Return</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="about.html">About</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="display">
+        <div class="container mt-5 pt-3">
+            <h2 class="text-white" style="text-align: center;">Return a Book</h2>
+            <div class="bg-dark p-4 rounded">
+                <div class="mb-3">
+                    <label for="name" class="form-label text-white">Customer Name:</label>
+                    <div id="name"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="book" class="form-label text-white">Book Name:</label>
+                    <div id="book"></div><br>
+                    <div class="mb-3 d-flex justify-content-center">
+                        <button class="btn btn-primary" onclick="returnBook()">Confirm</button>
+                    </div>
+                </div>
+                <script>
+                    const SERVER = "https://bookstore-project-backend-io1x.onrender.com";
+
+                    // Dropdown for customers list
+                    axios(`${SERVER}/customers`).then(res => {
+                        const name = document.getElementById('name');
+                        name.innerHTML = "<select id='customers' class='form-select'>" + res.data.map(item => `
+                <option value="${item.name}">${item.name}</option>`).join("") + "</select>";
+                    });
+
+                    // Dropdown for books list
+                    axios(`${SERVER}/books`).then(res => {
+                        const book = document.getElementById('book');
+                        book.innerHTML = "<select id='books' class='form-select'>" + res.data.map(item => `
+                <option value="${item.name}">${item.name}, ${item.duration}, ${item.status}</option>`).join("") + "</select>";
+                    });
+
+                    // delete a loan column
+                    const returnBook = async () => {
+                        const name = document.getElementById('customers').value;
+                        const book = document.getElementById('books').value;
+                        try {
+                            const response = await axios.delete(`${SERVER}/return_book`, {
+                                params: {
+                                    customer_name: name,
+                                    book_name: book
+                                }
+                            });
+                            alert(response.data.message);
+                        } catch (error) {
+                            alert(error.response.data.error);
+                        }
+                    };
+                    const login = async () => {
+                        try {
+                            const res = await axios.post(`${SERVER}/login`, {
+                                username: document.getElementById('username').value,
+                                password: document.getElementById('password').value
+                            });
+                            localStorage.setItem("access_token", res.data.access_token);
+                            window.location.href = "admin.html";
+                        } catch (error) {
+                            console.error(error);
+                            alert("Wrong username or password!");
+                        }
+                    };
+
+                    // search for books or authors or customers by name
+                    const search = async (event) => {
+                        event.preventDefault(); // Prevent the form from submitting and refreshing the page
+                        try {
+                            const bookName = document.getElementById('search').value;
+                            if (bookName) {
+                                const booksResponse = await axios(`${SERVER}/search_books/${bookName}`);// Search for books names
+                                const authorResponse = await axios(`${SERVER}/search_author/${bookName}`);// Search for books authors
+                                const books = [...booksResponse.data, ...authorResponse.data]; // Combine results
+                                if (books.length === 0) {
+                                    alert("No books or authors with this name found!"); // Alert the user if no book is found
+                                    return;
+                                }
+                                display.innerHTML = books.map(item => `
+            <div class="card" style="width: 15%;">
+                <img src="${item.image_url}" class="card-img-top" alt="Book image">
+                <div class="card-body">
+                    <h5 class="card-title">${item.name} by ${item.author}</h5>
+                    <p class="card-text">Category: ${item.category}, Year: ${item.year_published}<br>
+                    You can loan this book ${item.duration}.<br>
+                    <h6>Currently: ${item.status}.</h6></p>
+                    <a href="loans_data.html" class="btn btn-primary">Loan</a>
+                </div>
+            </div>
+        `).join("");
+                            }
+                        }
+                        catch (error) {
+                            alert("Please enter a search query.");
+                        }
+                    }
+                    // Attach the search event to the form
+                    document.getElementById('search-form').addEventListener('submit', search);
+                </script>
+</body>
+
+</html>
