@@ -319,6 +319,7 @@
         const loan_active = async () => {
             const id = document.getElementById("loans").value;
             const token = localStorage.getItem("access_token");
+            try{
             const response= await axios.put(`${SERVER}/loan_status_active/${id}`, {
             }, {
                 headers: {
@@ -327,11 +328,16 @@
             });
             alert(response.data.message);
             window.location.reload();
-        };
+        }catch (error) {
+                console.error(error);
+                alert('Loan already active or please admin log in!');
+            }
+        }
         // Turn loan Late
         const loan_late = async () => {
             const id = document.getElementById("loans").value;
             const token = localStorage.getItem("access_token");
+            try{
             const response= await axios.put(`${SERVER}/loan_status_late/${id}`, {
             }, {
                 headers: {
@@ -340,7 +346,11 @@
             });
             alert(response.data.message);
             window.location.reload();
-        };
+        }catch (error) {
+                console.error(error);
+                alert('Loan already late or please admin log in!');
+            }
+        }
         // log in admin username and password to get token
         const login = async () => {
             try {
