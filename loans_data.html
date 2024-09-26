@@ -231,20 +231,19 @@
             }
         };
 
-        // Dropdown for customers list
+        // Dropdown for customers list-name value
         axios(`${SERVER}/customers`).then(res => {
             const customer_name = document.getElementById('name');
             customer_name.innerHTML = "<select id='customers' class='form-select'>" + res.data.map(item => `
-                <option value="${item.name}">Customer name: ${item.name}, Customer id: ${item.id}</option>`).join("") + "</select>";
+              <option value="${item.id}" data-name="${item.name}">Customer id: ${item.id}, Customer name: ${item.name}</option>`).join("") + "</select>";
         });
-
         // Dropdown for books list
         axios(`${SERVER}/books`).then(res => {
             const book = document.getElementById('book');
             book.innerHTML = "<select id='books' class='form-select'>" + res.data.map(item => `
-                <option value="${item.name}">Book: ${item.id}, ${item.name}, ${item.duration}, ${item.status}</option>`).join("") + "</select>";
+            <option value="${item.id}" data-name="${item.name}">Book: ${item.id}, ${item.name}, ${item.duration}, ${item.status}</option>`).join("") + "</select>";
         });
-        // Dropdown for books list
+        // Dropdown for loans list
         axios(`${SERVER}/show_loans`).then(res => {
             const loan = document.getElementById('show_loans');
             loan.innerHTML = "<select id='loans' class='form-select'>" + res.data.map(item => `
@@ -253,15 +252,16 @@
 
         // adds a new loan
         const loanBook = async () => {
-            const name = document.getElementById('customers').value;
-            const book = document.getElementById('books').value;
+            const customerSelect = document.getElementById('customers');
+            const customerName = customerSelect.options[customerSelect.selectedIndex].dataset.name;
+            const bookSelect = document.getElementById('books');
+            const bookName = bookSelect.options[bookSelect.selectedIndex].dataset.name;
             const loanDate = document.getElementById('date').value;
             const returnDate = document.getElementById('return').value;
-
             try {
                 const response = await axios.post(`${SERVER}/loan_book`, {
-                    customer_name: name,
-                    book_name: book,
+                    customer_name: customerName,
+                    book_name: bookName,
                     loanDate: loanDate,
                     returnDate: returnDate
                 });
@@ -319,16 +319,16 @@
         const loan_active = async () => {
             const id = document.getElementById("loans").value;
             const token = localStorage.getItem("access_token");
-            try{
-            const response= await axios.put(`${SERVER}/loan_status_active/${id}`, {
-            }, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            alert(response.data.message);
-            window.location.reload();
-        }catch (error) {
+            try {
+                const response = await axios.put(`${SERVER}/loan_status_active/${id}`, {
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                alert(response.data.message);
+                window.location.reload();
+            } catch (error) {
                 console.error(error);
                 alert('Loan already active or please admin log in!');
             }
@@ -337,16 +337,16 @@
         const loan_late = async () => {
             const id = document.getElementById("loans").value;
             const token = localStorage.getItem("access_token");
-            try{
-            const response= await axios.put(`${SERVER}/loan_status_late/${id}`, {
-            }, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            alert(response.data.message);
-            window.location.reload();
-        }catch (error) {
+            try {
+                const response = await axios.put(`${SERVER}/loan_status_late/${id}`, {
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                alert(response.data.message);
+                window.location.reload();
+            } catch (error) {
                 console.error(error);
                 alert('Loan already late or please admin log in!');
             }
@@ -432,23 +432,23 @@
         // delete data tables  
         const delete_tables = async () => {
             const token = localStorage.getItem("access_token");
-            try{
-            const response = await axios.delete(`${SERVER}/delete_tables`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            alert(response.data.message)
-        }catch (error) {
+            try {
+                const response = await axios.delete(`${SERVER}/delete_tables`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                alert(response.data.message)
+            } catch (error) {
                 console.error(error);
                 alert('Failed to delete tables please admin log in!');
             }
         }
         // create all tables and Seed the tables with data from the backend
         const seed_data = async () => {
-            try{
+            try {
                 const response = await axios.post(`${SERVER}/seed_data`)
                 alert(response.data.message);
                 window.location.reload();
-            }catch (error) {
+            } catch (error) {
                 console.error(error);
                 alert('Failed to seed data please admin log in!');
             }
