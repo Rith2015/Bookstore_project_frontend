@@ -235,14 +235,14 @@
         axios(`${SERVER}/customers`).then(res => {
             const customer_name = document.getElementById('name');
             customer_name.innerHTML = "<select id='customers' class='form-select'>" + res.data.map(item => `
-                <option value="${item.id}">Customer name: ${item.name}, Customer id: ${item.id}</option>`).join("") + "</select>";
+                <option value="${item.name}">Customer name: ${item.name}, Customer id: ${item.id}</option>`).join("") + "</select>";
         });
 
         // Dropdown for books list
         axios(`${SERVER}/books`).then(res => {
             const book = document.getElementById('book');
             book.innerHTML = "<select id='books' class='form-select'>" + res.data.map(item => `
-                <option value="${item.id}">Book: ${item.id}, ${item.name}, ${item.duration}, ${item.status}</option>`).join("") + "</select>";
+                <option value="${item.name}">Book: ${item.id}, ${item.name}, ${item.duration}, ${item.status}</option>`).join("") + "</select>";
         });
         // Dropdown for books list
         axios(`${SERVER}/show_loans`).then(res => {
@@ -447,6 +447,7 @@
             try{
                 const response = await axios.post(`${SERVER}/seed_data`)
                 alert(response.data.message);
+                window.location.reload();
             }catch (error) {
                 console.error(error);
                 alert('Failed to seed data please admin log in!');

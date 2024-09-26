@@ -269,6 +269,7 @@
             try{
                 const response = await axios.post(`${SERVER}/seed_data`)
                 alert(response.data.message);
+                window.location.reload();
             }catch (error) {
                 console.error(error);
                 alert('Failed to seed data please admin log in!');
