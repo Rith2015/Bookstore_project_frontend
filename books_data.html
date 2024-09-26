@@ -275,14 +275,14 @@
                 console.error("Error updating book:", error);
                 alert("Failed to update book. Please try again.");
             }
-        }     ;       
+        };
 
 
         // Turn book available
         const available = async () => {
             const id = document.getElementById("books").value;
             const token = localStorage.getItem("access_token");
-            const response= await axios.put(`${SERVER}/make_books_available/${id}`, {
+            const response = await axios.put(`${SERVER}/make_books_available/${id}`, {
             }, {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -295,12 +295,12 @@
         const unavailable = async () => {
             const id = document.getElementById("books").value;
             const token = localStorage.getItem("access_token");
-            const response= await axios.put(`${SERVER}/Make_books_Unavailable/${id}`, {
+            const response = await axios.put(`${SERVER}/Make_books_Unavailable/${id}`, {
             }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
-                
+
             });
             alert(response.data.message);
             window.location.reload();
@@ -402,15 +402,19 @@
         document.getElementById('search-form').addEventListener('submit', search);
         // delete data tables  
         const delete_tables = async () => {
-            const response = await axios.delete(`${SERVER}/delete_tables`)
+            const response = await axios.delete(`${SERVER}/delete_tables`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             alert(response.data.message)
         }
         // create all tables and Seed the tables with data from the backend
-        const seed_data=async()=>{
-            const response =await axios.post(`${SERVER}/seed_data`)
+        const seed_data = async () => {
+            const response = await axios.post(`${SERVER}/seed_data`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             alert(response.data.message);
             window.location.reload();
-        }
+        };
     </script>
 </body>
 
