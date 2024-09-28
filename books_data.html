@@ -188,6 +188,7 @@
                 <div class="col-md-3 mb-4">
                     <div class="card h-100">
                         <div class="card-body">
+                            <img src="${item.image_url}" class="card-img-top" alt="Book image">
                             <h5 class="card-title">ID: ${item.id} <br> Name: ${item.name}</h5>
                             <h5 class="card-subtitle mb-2 text-muted">Author: ${item.author} <br>
                                 Category: ${item.category} <br>
@@ -273,7 +274,7 @@
                 window.location.reload();
             } catch (error) {
                 console.error("Error updating book:", error);
-                alert("Failed to update book. Please try again.");
+                alert("Failed to update book. Book is currently unavailable beacuse its in a loan.");
             }
         };
 
