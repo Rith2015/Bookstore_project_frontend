@@ -129,39 +129,41 @@
             <button class="btn btn-info mb-2" data-bs-toggle="collapse" data-bs-target="#show_customers"
                 onclick="show_customers_data()">Show Customers</button>
             <!-- Collapsible Item Management Form -->
-            <div id="manageItems" class="collapse mt-3">
-                <div class="mb-2">
-                    <label for="itemId" class="form-label">Update customer info or delete customer:</label>
-                    <div id="customer"></div>
-                </div>
-                <button class="btn btn-warning mb-2" onclick="update_item()">Update</button>
-                <button class="btn btn-success mb-2" onclick="del_customer()">Delete</button>
-                <div class="mb-2">
-                    <label for="name" class="form-label">Name:</label>
-                    <input type="text" class="form-control" id="name" required>
-                </div>
-                <div class="mb-2">
-                    <label for="age" class="form-label">Age:</label>
-                    <input type="number" class="form-control" id="age" required>
-                </div>
-                <div class="mb-2">
-                    <label for="email" class="form-label">Email:</label>
-                    <input type="text" class="form-control" id="email" required>
-                </div>
-                <div class="mb-2">
-                    <label for="phone" class="form-label text-white">Phone number:</label>
-                    <div class="input-group">
-                        <span class="input-group-text">555-</span>
-                        <input type="text" id="phone_number" class="form-control" placeholder="Enter phone number">
+            <for id="manageItems" class="collapse mt-3">
+                    <div class="mb-2">
+                        <label for="itemId" class="form-label">Update customer info or delete customer:</label>
+                        <div id="customer"></div>
                     </div>
-                </div>
-                <div class="mb-2">
-                    <label for="city" class="form-label">City:</label>
-                    <input type="text" class="form-control" id="city" required>
-                </div>
-                <button class="btn btn-primary" onclick="new_customer()">Add</button>
-            </div>
+                    <button class="btn btn-warning mb-2" onclick="update_item()">Update</button>
+                    <button class="btn btn-success mb-2" onclick="del_customer()">Delete</button>
+                    <form onsubmit="return new_customer(event)">
+                    <div class="mb-2">
+                        <label for="name" class="form-label">Name:</label>
+                        <input type="text" class="form-control" id="name">
+                    </div>
+                    <div class="mb-2">
+                        <label for="age" class="form-label">Age:</label>
+                        <input type="number" class="form-control" id="age">
+                    </div>
+                    <div class="mb-2">
+                        <label for="email" class="form-label">Email:</label>
+                        <input type="email" class="form-control" id="email">
+                    </div>
+                    <div class="mb-2">
+                        <label for="phone" class="form-label text-white">Phone number:</label>
+                        <div class="input-group">
+                            <span class="input-group-text">555-</span>
+                            <input type="number" id="phone_number" class="form-control"
+                                placeholder="Enter phone number">
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label for="city" class="form-label">City:</label>
+                        <input type="text" class="form-control" id="city">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add</button>
         </div>
+    </div>
     </div>
     <div class="collapse mt-3, row" id="show_customers"></div>
     <script>
@@ -205,14 +207,19 @@
             customer_name.innerHTML = "<select id='customers' class='form-select'>" + res.data.map(item => `
                 <option value="${item.id}">${item.name}</option>`).join("") + "</select>";
         });
-
         // Add new customer 
-        const new_customer = async () => {
+        const new_customer = async (event) => {
+            event.preventDefault();  // Prevent default form submission
             const name = document.getElementById('name').value;
             const age = document.getElementById('age').value;
             const email = document.getElementById('email').value;
             const phone_number = document.getElementById('phone_number').value;
             const city = document.getElementById('city').value;
+            // sends alert if not all fields are filled to add customer
+            if (!name || !age || !email || !phone_number || !city) {
+                alert("All fields must be filled out.");
+                return;
+            }
             try {
                 const response = await axios.post(`${SERVER}/add_customers`, {
                     name: name,
@@ -227,7 +234,6 @@
                 alert(error.response.data.error);
             }
         };
-
         // Update customers info
         const update_item = async () => {
             const id = document.getElementById("customers").value;
@@ -257,6 +263,7 @@
                 alert("Failed to update customer. Please try again.");
             }
         };
+
         // delete customer
         const del_customer = async () => {
             const id = document.getElementById('customers').value;
@@ -355,23 +362,23 @@
         // delete data tables  
         const delete_tables = async () => {
             const token = localStorage.getItem("access_token");
-            try{
-            const response = await axios.delete(`${SERVER}/delete_tables`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            alert(response.data.message)
-        }catch (error) {
+            try {
+                const response = await axios.delete(`${SERVER}/delete_tables`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                alert(response.data.message)
+            } catch (error) {
                 console.error(error);
                 alert('Failed to delete tables please admin log in!');
             }
         }
         // create all tables and Seed the tables with data from the backend
         const seed_data = async () => {
-            try{
+            try {
                 const response = await axios.post(`${SERVER}/seed_data`)
                 alert(response.data.message);
                 window.location.reload();
-            }catch (error) {
+            } catch (error) {
                 console.error(error);
                 alert('Failed to seed data please admin log in!');
             }

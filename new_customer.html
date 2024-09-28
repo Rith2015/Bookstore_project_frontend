@@ -95,31 +95,32 @@
     <div class="container mt-5 pt-5">
         <h2 class="text-white" style="text-align: center;">New Customer</h2>
         <div class="bg-dark p-4 rounded">
+            <form onsubmit="return new_customer(event)">
             <div class="mb-3">
                 <label for="name" class="form-label text-white">Full name: </label>
-                <input type="text" id="name" class="form-control">
+                <input type="text" id="name" class="form-control" required>
             </div>
             <div class="mb-3">
                 <label for="age" class="form-label text-white">Age: </label>
-                <input type="number" id="age" class="form-control">
+                <input type="number" id="age" class="form-control" required>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label text-white">Email: </label>
-                <input type="text" id="email" class="form-control">
+                <input type="email" id="email" class="form-control" required>
                 <div class="mb-3">
                     <label for="phone" class="form-label text-white">Phone number:</label>
                     <div class="input-group">
                         <span class="input-group-text">555-</span>
-                        <input type="text" id="phone" class="form-control" placeholder="Enter phone number">
+                        <input type="number" id="phone" class="form-control" placeholder="Enter phone number" required>
                     </div>
                 </div>
             </div>
 
             <div class="mb-3">
                 <label for="city" class="form-label text-white">City: </label>
-                <input type="text" id="city" class="form-control">
+                <input type="text" id="city" class="form-control" required>
             </div>
-            <button class="btn btn-primary" onclick="new_customer()">Confirm</button>
+            <button type="submit" class="btn btn-primary">Confirm</button>
         </div>
     </div>
 
@@ -133,7 +134,8 @@
                 <option value="${item.name}">${item.name}</option>`).join("") + "</select>";
         });
         // adds new customer
-        const new_customer = async () => {
+        const new_customer = async (event) => {
+            event.preventDefault();  // Prevent default form submission
             const name = document.getElementById('name').value;
             const age = document.getElementById('age').value;
             const email = document.getElementById('email').value;

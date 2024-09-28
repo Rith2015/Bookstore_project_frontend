@@ -226,6 +226,11 @@
             const year = document.getElementById("year").value;
             const loan_time_type_id = document.getElementById("loan_time").value;
             const image_url = document.getElementById("Image_URL").value;
+            // Validate that all fields are filled
+            if (!name || !author || !category || !year || !image_url) {
+                alert("All fields must be filled out.");
+                return; 
+            }
 
             try {
                 const token = localStorage.getItem("access_token");
@@ -404,23 +409,23 @@
         // delete data tables  
         const delete_tables = async () => {
             const token = localStorage.getItem("access_token");
-            try{
-            const response = await axios.delete(`${SERVER}/delete_tables`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            alert(response.data.message)
-        }catch (error) {
+            try {
+                const response = await axios.delete(`${SERVER}/delete_tables`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                alert(response.data.message)
+            } catch (error) {
                 console.error(error);
                 alert('Failed to delete tables please admin log in!');
             }
         }
         // create all tables and Seed the tables with data from the backend
         const seed_data = async () => {
-            try{
+            try {
                 const response = await axios.post(`${SERVER}/seed_data`)
                 alert(response.data.message);
                 window.location.reload();
-            }catch (error) {
+            } catch (error) {
                 console.error(error);
                 alert('Failed to seed data please admin log in!');
             }
